@@ -22,15 +22,17 @@ public class Main {
             }
         }
         System.out.println(ans);
-        StringBuilder sb = new StringBuilder();
-        sb.append(imax + 1);
+        int [] res = new int[ans];
+        res[--ans] = imax + 1;
         for (int j = imax; j > 0; j--) {
-            if (d[j - 1] < imax + 1 && a[j - 1] >= a[j]) {
+            if (d[imax] - 1 == d[j - 1] && a[j - 1] >= a[imax]) {
                 imax = j - 1;
-                sb.append(" ").append(imax + 1);
+                res[--ans] = imax + 1;
             }
         }
-        System.out.println(sb.reverse().toString());
+        for (int i = 0; i < res.length; i++) {
+            System.out.print(res[i] + " ");
+        }
     }
 
     public static void main(String[] args) {
