@@ -2,46 +2,67 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static void LISBottomUP(int[] a) {
-        int n = a.length;
-        int[] d = new int [n];
-        for (int i = 0; i < n; i++) {
-            d[i] = 1;
-            for (int j = 0; j <= i - 1; j++) {
-                if (a[j] >= a[i] && d[j] + 1 > d[i]) {
-                    d[i] = d[j] + 1;
-                }
+
+    private int binarySearch(int a[], int T[], int end, int s){
+        int start = 0;
+        int middle;
+        int len = end;
+        while(start <= end){
+            middle = (start + end)/2;
+            if(middle < len && a[T[middle]] >= s && s > a[T[middle+1]]){
+                return middle+1;
+            }else if(a[T[middle]] >= s){
+                start = middle+1;
+            }else{
+                end = middle-1;
             }
         }
-        int ans = 0;
-        int imax = 0;
-        for (int i = 0; i < n; i++) {
-            if (ans <= d[i]) {
-                ans = d[i];
-                imax = i;
+        return -1;
+    }
+
+    public void lis(int a[]){
+        int T[] = new int[a.length];
+        int R[] = new int[a.length];
+        for(int i=0; i < R.length ; i++) {
+            R[i] = -1;
+        }
+        T[0] = 0;
+        int len = 0;
+        for(int i=1; i < a.length; i++){
+            if(a[T[0]] < a[i]){
+                T[0] = i;
+            }else if(a[T[len]] >= a[i]){
+                len++;
+                T[len] = i;
+                R[T[len]] = T[len-1];
+            }else{
+                int index = binarySearch(a, T, len,a[i]);
+                T[index] = i;
+                R[T[index]] = T[index-1];
             }
         }
-        System.out.println(ans);
-        int [] res = new int[ans];
-        res[--ans] = imax + 1;
-        for (int j = imax; j > 0; j--) {
-            if (d[imax] - 1 == d[j - 1] && a[j - 1] >= a[imax]) {
-                imax = j - 1;
-                res[--ans] = imax + 1;
-            }
+        System.out.println(len + 1);
+        int index = T[len];
+        int[]res = new int[len + 1];
+        int j = len;
+        while(index != -1 && j >= 0) {
+            res[j] = index + 1;
+            index = R[index];
+            j--;
         }
-        for (int i = 0; i < res.length; i++) {
-            System.out.print(res[i] + " ");
+        for (int re : res) {
+            System.out.print(re + " ");
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String args[]){
         Scanner scanner = new Scanner(System.in);
         int n = scanner.nextInt();
         int[]a = new int[n];
         for (int i = 0; i < n; i++) {
             a[i] = scanner.nextInt();
         }
-        LISBottomUP(a);
+        Main lis = new Main();
+        lis.lis(a);
     }
 }
